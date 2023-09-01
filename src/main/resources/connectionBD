@@ -1,0 +1,128 @@
+CREATE TABLE IF NOT EXISTS public."customers" (
+
+        id serial NOT NULL PRIMARY KEY,
+        usernames text NOT NULL,
+        wish_list text ,
+        purchase_history text ,
+        email text
+);
+
+INSERT INTO public."customers" (id, usernames, wish_list, purchase_history,email) values
+       (1, 'Olya', 'conditioner', 'gel', 'oneCustomer@email'),
+       (2, 'Aliona','schampoo', 'soap', 'twoCustomer@gmail'),
+       (3, 'George', 'gel',null,'threeCustomer@gmail');
+       (4, 'Max', 'soap', 'shampoo','fourCustomer@gmail');
+       (5, 'Kate', 'shampoo', null, 'fiveCustomer@gmail');
+
+);
+
+       CREATE TABLE IF NOT EXISTS public."customers_details" (
+        id int NOT NULL PRIMARY KEY,
+        customers_id INT,
+        usernames text NOT NULL,
+        email text NOT NULL,
+        phone text NOT NULL,
+        bonus_card int UNIQUE,
+        client_address text NOT NULL,
+        FOREIGN KEY (customers_id) REFERENCES "public".customers(id)
+
+);
+
+INSERT INTO public."customers_details" (id, customers_id, usernames, email, phone, bonus_card, client_address) values
+       (6, default,'Katya', 'katya@Gmail', '0956687131', 13, 'Faina Towm'),
+       (7, default, 'Misha', 'Misha@Gmail', '0124578510', 12, 'Salyutna 3' ),
+       (8, default, 'Artyom', 'Artyom@email', '0124578154', 17, 'Borchagovka'),
+       (9, default, 'Yuriy', 'Yuriy@email', '0120454522', 10, 'Borchagovka'),
+       (10, default, 'Sasha', 'Sasha@gmail', '0712477789', 56, 'Sviatoshyn');
+
+);
+
+   CREATE TABLE IF NOT EXISTS orders_details (
+
+        id serial NOT NULL PRIMARY KEY,
+        orders_customers int ,
+        orders_o_details INT,
+        date_delivery date NOT NULL,
+        sum int NOT NULL
+);
+
+INSERT INTO orders_details (id,orders_customers, date_delivery, sum) values
+       ( 1 , 2, '2023-10-12', 80),
+       ( 2 , 0, '2020-12-07', 45),
+       ( 3, 3, '2015-02-19', 9),
+       ( 4, 0,'2023-07-13', 70),
+       ( 5, 0, '2016-03-20', 30),
+
+);
+
+   CREATE TABLE IF NOT EXISTS carts (
+
+        id serial NOT NULL PRIMARY KEY,
+        name_goods text NOT NULL,
+        sum_goods int NOT NULL,
+        FOREIGN KEY (carts_id) REFERENCES public."customers"(id)
+);
+
+INSERT INTO "public".carts (id, name_goods, sum_goods) values
+       ( 1021 , 'soap', 8),
+       ( 1022 , 'sponge', 45),
+       ( 1023, 'hand soup', 9),
+       ( 1024, 'hair dryuer', 70),
+       ( 1025, 'scales', 30),
+       ( 1026, 'shampoo', 60),
+       ( 1027, 'soap', 8);
+);
+  CREATE TABLE IF NOT EXISTS public."orders" (
+        id serial NOT NULL PRIMARY KEY,
+        orders_id INT,
+        orders_name text NOT NULL,
+        orders_sum int NOT NULL,
+        customers_id INT NOT NULL,
+        carts_info INT,
+        FOREIGN KEY (carts_info) REFERENCES orders(id),
+        FOREIGN KEY (customers_id) REFERENCES orders(id)
+);
+
+INSERT INTO public."orders" (id, orders_name, orders_sum, customers_id) values
+       (101, 'order#1', 3210, 1),
+       (99, 'order#2', 512, 2),
+       (96, 'order#3', 178, 3);
+       (94, 'order#4', 148, 4);
+
+);
+
+    CREATE TABLE IF NOT EXISTS orders_o_details (
+    orders_details_id int REFERENCES orders_details(id),
+    orders_id int REFERENCES orders(id),
+    CONSTRAINT orders_o_details_pk
+    PRIMARY KEY (orders_details_id, orders_id)
+    );
+
+
+--1
+SELECT * FROM "public".customers WHERE id = 1;
+
+--2
+SELECT * FROM orders_details ORDER BY orders_details ;
+--// ?
+SELECT * FROM orders_details ord
+INNER JOIN customers cus ON ord."id" = cus.id;
+--3
+SELECT * FROM orders
+JOIN customers on orders = orders;
+
+GROUP BY customers.id, customers.usernames;
+
+--4
+SELECT * from customers
+FROM customers c LEFT JOIN orders o ON
+c."id" = o.customers_id
+GROUP BY c.id, c.usernames
+
+--5
+UPDATE customers
+SET usernames = 'Katherine'
+WHERE id = 5;
+
+--6
+TRUNCATE TABLE carts;
